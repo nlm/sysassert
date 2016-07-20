@@ -23,18 +23,28 @@ class SysAssert(object):
         """
         do the actual job of validating the system
         """
+        overall_status = True
+        results = []
+
         for name, config in sorted(self.config.items()):
-            self.log.debug('config section: "{}"'.format(name))
+            self.log.debug('config section: {}'.format(name))
             if name not in self.plugins:
-                self.log.error('plugin "{}" not found'.format(name))
+                self.log.error('plugin not found: {}'.format(name))
                 continue
-            self.log.debug('configuring plugin {}'.format(name))
+            self.log.debug('configuring plugin: {}'.format(name))
             plugin = self.plugins[name](config)
-            self.log.debug('validating system using plugin {}'.format(name))
+            self.log.info('===== BEGIN {} ====='.format(name))
             result = plugin.validate()
             assert(isinstance(result, ValidationResult))
+            results.append(result)
 
             if result.status is True:
-                print('win: {}'.format(result.message))
+                self.log.info('success: {}'.format(result.message))
             else:
-                print('fail: {}'.format(result.message))
+                self.log.error('error: {} ({})'.format(result.message,
+                                                       result.details))
+                overall_status = False
+
+            self.log.info('===== END {} ====='.format(name))
+
+        return (overall_status, results)
