@@ -1,4 +1,6 @@
+import re
 from sysassert.datasource import DataSource
+from sysassert.cmd import rawcmd
 
 class DMIDataSource(DataSource):
 
@@ -12,7 +14,7 @@ class DMIDataSource(DataSource):
         8:  'port connector',
         9:  'system slot',
         10: 'on board device',
-        11: 'OEM strings',
+        11: 'oem strings',
         #13: 'bios language',
         15: 'system event log',
         16: 'physical memory array',
@@ -25,8 +27,11 @@ class DMIDataSource(DataSource):
         41: 'onboard device',
     }
 
-    def __init__(self, dmidata):
-        self.dmidata = dmidata
+    def __init__(self, dmidata=None):
+        if dmidata is not None:
+            self.dmidata = dmidata
+        else:
+            dmidata = rawcmd(['cat', 'dmidecode.txt'])
         self.data = self._parse_dmi(dmidata)
 
     def dmi_id(self, dmi_type):
@@ -49,13 +54,6 @@ class DMIDataSource(DataSource):
         dmi_id = self.dmi_id(dmi_type)
         return [elt[1] for elt in self.data if elt[0] == dmi_id]
 
-    @property
-    def memory_devices(self):
-        """
-        Returns the list of memory devices
-        """
-        return self.dmi_items('memory device')
-
     def _parse_dmi(self, content):
         """
         Parse the whole dmidecode output.
@@ -76,7 +74,11 @@ class DMIDataSource(DataSource):
         return info
 
     @staticmethod
-    def _parse_handle_section(lines):
+    def _normalize(string):
+        return re.sub('\W', '_', string).lower()
+
+    @classmethod
+    def _parse_handle_section(cls, lines):
         """
         Parse a section of dmidecode output
 
@@ -93,6 +95,7 @@ class DMIDataSource(DataSource):
                 data[k].append(line.lstrip())
             elif line.startswith('\t'):
                 k, v = [i.strip() for i in line.lstrip().split(':', 1)]
+                k = cls._normalize(k)
                 if v:
                     data[k] = v
                 else:
