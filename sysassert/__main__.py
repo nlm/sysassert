@@ -39,7 +39,7 @@ def main(arguments=None):
     parser.add_argument('-l', '--loglevel', default='INFO',
                         choices=('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'),
                         help="Set the logging level")
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
 
     config_logger(colored='always', loglevel=args.loglevel)
     logger = logging.getLogger(__name__)
@@ -51,14 +51,10 @@ def main(arguments=None):
         parser.error(exc)
 
     sas = SysAssert(profile_config)
-    result = sas.validate()
-    if result[0] is True:
-        logger.info('overall result: all tests passed')
+    if sas.validate() is True:
+        logger.info('overall result: success')
     else:
-        logger.error('overall result: some tests failed')
-
-    #dmiout = rawcmd(['cat', 'dmidecode.txt'])
-    #memdev = DMI(dmiout).memory_devices
+        logger.error('overall result: failure')
 
 if __name__ == '__main__':
     main()

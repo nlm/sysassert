@@ -30,21 +30,12 @@ class SysAssert(object):
             self.log.debug('config section: {}'.format(name))
             if name not in self.plugins:
                 self.log.error('plugin not found: {}'.format(name))
-                continue
+                return False
             self.log.debug('configuring plugin: {}'.format(name))
             plugin = self.plugins[name](config)
-            self.log.info('===== BEGIN {} ====='.format(name))
-            result = plugin.validate()
-            assert(isinstance(result, ValidationResult))
-            results.append(result)
-
-            if result.status is True:
-                self.log.info('success: {}'.format(result.message))
-            else:
-                self.log.error('error: {} ({})'.format(result.message,
-                                                       result.details))
+            self.log.info('===== BEGIN {} ====='.format(name.upper()))
+            if plugin.validate() is False:
                 overall_status = False
+            self.log.info('===== END {} ====='.format(name.upper()))
 
-            self.log.info('===== END {} ====='.format(name))
-
-        return (overall_status, results)
+        return overall_status
