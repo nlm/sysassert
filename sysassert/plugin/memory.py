@@ -1,11 +1,6 @@
 import logging
-from pprint import pformat
 from sysassert.plugin import AssertPlugin
-
-def _inline_dict(adict):
-    return ', '.join(['{}: {}'.format(key, value)
-                      for key, value in adict.items()])
-
+from sysassert.tools import inline_dict, DictListComparator
 
 class MemoryPlugin(AssertPlugin):
 
@@ -16,35 +11,15 @@ class MemoryPlugin(AssertPlugin):
     def validate(self):
         dmi = self.get_datasource('dmi')()
         mem_devices = dmi.dmi_items('memory device')
+        dlc = DictListComparator(self.config, mem_devices)
 
-        for wanted_device in self.config:
-            self.log.debug('want device: {}'.format(pformat(wanted_device)))
-            matching = False
+        for item in dlc.found:
+            self.log.info('found matching memory device ({})'.format(inline_dict(item)))
 
-            for real_device in mem_devices:
+        for item in dlc.missing:
+            self.log.error('missing memory device ({})'.format(inline_dict(item)))
 
-                matching = True
-                for attr, value in wanted_device.items():
-                    if real_device[attr] != value:
-                        matching = False
-                        break
+        for item in dlc.unwanted:
+            self.log.error('unwanted memory device ({})'.format(inline_dict(item)))
 
-                if matching:
-                    self.log.debug('found matching device: {}'
-                                   .format(pformat(real_device)))
-                    self.log.info('memory device found ({})'
-                                  .format(_inline_dict(wanted_device)))
-                    mem_devices.remove(real_device)
-                    break
-
-            if not matching:
-                return self.make_result(False, 'memory device not found',
-                                        _inline_dict(wanted_device))
-
-        if len(mem_devices) > 0:
-            return self.make_result(False,
-                                    '{} additional memory devices found'
-                                    .format(len(mem_devices)),
-                                            pformat(mem_devices))
-
-        return self.make_result(True, 'all memory devices found')
+        return len(dlc.found) > 0 and len(dlc.missing) == 0 and len(dlc.unwanted) == 0
