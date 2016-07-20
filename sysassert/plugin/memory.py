@@ -38,11 +38,13 @@ class MemoryPlugin(AssertPlugin):
                     break
 
             if not matching:
-                return self.make_result(False, 'memory device not found', _inline_dict(wanted_device))
+                return self.make_result(False, 'memory device not found',
+                                        _inline_dict(wanted_device))
 
         if len(mem_devices) > 0:
             return self.make_result(False,
-                                    '{} additional memory devices found'.format(len(mem_devices)),
-                                    pformat(mem_devices))
+                                    '{} additional memory devices found'
+                                    .format(len(mem_devices)),
+                                            pformat(mem_devices))
 
         return self.make_result(True, 'all memory devices found')
