@@ -21,6 +21,7 @@ setup(
             'dummy = sysassert.plugin.dummy:DummyPlugin',
             'memory = sysassert.plugin.memory:MemoryPlugin',
             'processor = sysassert.plugin.processor:ProcessorPlugin',
+            'bios = sysassert.plugin.bios:BIOSPlugin',
         ],
         'sysassert_datasource_v1': [
             'dmi = sysassert.datasource.dmi:DMIDataSource',
