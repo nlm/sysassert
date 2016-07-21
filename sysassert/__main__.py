@@ -52,13 +52,14 @@ def parse_args(arguments=None):
                               help='machine profile to check')
 
     # Generation Command
-    cmd_generate = subparsers.add_parser('generate', aliases=['gen'])
+    cmd_generate = subparsers.add_parser('generate', aliases=['gen'],
+                                         help='generate configuration from current hardware')
     cmd_generate.add_argument('plugin', nargs='*',
                               help='plugins to generate config from')
 
     # List Plugins Command
-    cmd_list_plugins = subparsers.add_parser('list_plugins', aliases=['lip'],
-                                             help='list available plugins')
+    cmd_plugins = subparsers.add_parser('plugins', aliases=['plu'],
+                                        help='list available plugins')
 
     return parser.parse_args(arguments)
 
@@ -83,7 +84,7 @@ def main(arguments=None):
             logger.error('overall result: failure')
     elif args.command in ('generate', 'gen'):
         print(yaml.dump(sas.generate(args.plugin), default_flow_style=False))
-    elif args.command in ('list_plugins', 'lip'):
+    elif args.command in ('plugins', 'plu'):
         logger.info('available plugins: {}'.format(', '.join(sas.plugins)))
     else:
         raise Exception('internal error')
