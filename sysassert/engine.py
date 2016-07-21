@@ -1,14 +1,19 @@
 import logging
 import pkg_resources as pkr
 from voluptuous import Schema
-from .plugin import AssertPlugin, ValidationResult
+from .plugin import AssertPlugin
 
 class SysAssert(object):
 
-    def __init__(self, config):
-        self.config = config
-        self.plugins = self.load_plugins()
+    schema = Schema(int)
+
+    def __init__(self):
         self.log = logging.getLogger(__name__)
+        self._plugins = self.load_plugins()
+
+    @property
+    def plugins(self):
+        return self._plugins
 
     @staticmethod
     def load_plugins():
@@ -19,23 +24,39 @@ class SysAssert(object):
             plugins[entry.name] = entry.load()
         return plugins
 
-    def validate(self):
+    def validate(self, config):
         """
         do the actual job of validating the system
         """
         overall_status = True
         results = []
 
-        for name, config in sorted(self.config.items()):
-            self.log.debug('config section: {}'.format(name))
-            if name not in self.plugins:
-                self.log.error('plugin not found: {}'.format(name))
+        for plugin_name, plugin_config in sorted(config.items()):
+            self.log.debug('config section: {}'.format(plugin_name))
+            if plugin_name not in self.plugins:
+                self.log.error('plugin not found: {}'.format(plugin_name))
                 return False
-            self.log.debug('configuring plugin: {}'.format(name))
-            plugin = self.plugins[name](config)
-            self.log.info('===== BEGIN {} ====='.format(name.upper()))
-            if plugin.validate() is False:
+            self.log.debug('configuring plugin: {}'.format(plugin_name))
+            plugin = self.plugins[plugin_name]()
+            self.log.info('===== BEGIN {} ====='.format(plugin_name.upper()))
+            if plugin.validate(plugin_config) is False:
                 overall_status = False
-            self.log.info('===== END {} ====='.format(name.upper()))
+            self.log.info('===== END {} ====='.format(plugin_name.upper()))
 
         return overall_status
+
+    def generate(self, plugins=None):
+        """
+        generate configuration from what was seen by plugins
+        """
+        results = {}
+
+        if plugins is None or len(plugins) == 0:
+            plugins = self.plugins
+
+        for plugin_name in sorted(set(plugins)):
+            self.log.debug('generating with plugin: {}'.format(plugin_name))
+            plugin = self.plugins[plugin_name]()
+            results[plugin_name] = plugin.generate()
+
+        return results

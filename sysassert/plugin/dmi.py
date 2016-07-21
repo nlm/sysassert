@@ -4,14 +4,13 @@ from sysassert.tools import inline_dict, DictListComparator
 
 class DMIPlugin(AssertPlugin):
 
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
         self.log = logging.getLogger(__name__)
 
-    def dmi_validate(self, elttype):
+    def dmi_validate(self, elttype, spec):
         dmi = self.get_datasource('dmi')()
         dmi_items = dmi.dmi_items(elttype)
-        dlc = DictListComparator(self.config, dmi_items)
+        dlc = DictListComparator(spec, dmi_items)
 
         for item in dlc.found:
             self.log.info('found matching {} ({})'.format(elttype,
@@ -28,3 +27,5 @@ class DMIPlugin(AssertPlugin):
                 and len(dlc.missing) == 0
                 and len(dlc.unwanted) == 0)
 
+    def dmi_generate(self, elttype):
+        return self.get_datasource('dmi')().dmi_items(elttype)

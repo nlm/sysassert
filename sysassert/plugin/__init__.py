@@ -1,32 +1,11 @@
 import pkg_resources as pkr
 
-class ValidationResult(object):
-
-    def __init__(self, status, message=None, details=None):
-        self._status = bool(status)
-        self._message = message
-        self._details = details
-
-    @property
-    def status(self):
-        return self._status
-
-    @property
-    def message(self):
-        return self._message
-
-    @property
-    def details(self):
-        return self._details
-
-
 class AssertPlugin(object):
 
-    def __init__(self, config):
-        print('youpi')
+    def __init__(self):
         raise NotImplemented
 
-    def validate(self):
+    def validate(self, spec):
         raise NotImplemented
 
     @staticmethod
@@ -35,7 +14,3 @@ class AssertPlugin(object):
             if name == entrypoint.name:
                 return entrypoint.load()
         return None
-
-    @staticmethod
-    def make_result(status, message=None, details=None):
-        return ValidationResult(status, message, details)

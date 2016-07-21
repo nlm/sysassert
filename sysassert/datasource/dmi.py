@@ -87,7 +87,9 @@ class DMIDataSource(DataSource):
         * line started with one tab is one option and its value
         * line started with two tabs is a member of list
         """
-        data = { '_title': next(lines).rstrip() }
+        #data = { '_title': next(lines).rstrip() }
+        data = {}
+        next(lines)
 
         for line in lines:
             line = line.rstrip()
