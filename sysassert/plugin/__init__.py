@@ -40,7 +40,7 @@ class AssertPlugin(object):
         else:
             return len(dlc.missing) == 0
 
-    def datasource_generate(self, elttype):
+    def datasource_generate(self, datasource, elttype):
         """
         generate a plugin from a datasource
         """
