@@ -1,11 +1,16 @@
 import logging
 import pkg_resources as pkr
-from voluptuous import Schema
+from voluptuous import Schema, Required, Optional, MultipleInvalid
 from .plugin import AssertPlugin
 
 class SysAssert(object):
 
-    schema = Schema(int)
+    schema = Schema({
+        str: {
+            Optional('params'): dict,
+            Required('components'): [ dict ],
+        }
+    })
 
     def __init__(self):
         self.log = logging.getLogger(__name__)
@@ -24,14 +29,18 @@ class SysAssert(object):
             plugins[entry.name] = entry.load()
         return plugins
 
-    def validate(self, config):
+    def validate(self, profile):
         """
         do the actual job of validating the system
         """
         overall_status = True
         results = []
+        try:
+            profile = self.schema(profile)
+        except MultipleInvalid as exc:
+            self.log.error('error in configuration: {}'.format(exc))
 
-        for plugin_name, plugin_config in sorted(config.items()):
+        for plugin_name, plugin_data in sorted(profile.items()):
             self.log.debug('config section: {}'.format(plugin_name))
             if plugin_name not in self.plugins:
                 self.log.error('plugin not found: {}'.format(plugin_name))
@@ -39,7 +48,7 @@ class SysAssert(object):
             self.log.debug('configuring plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
             self.log.info('===== BEGIN {} ====='.format(plugin_name.upper()))
-            if plugin.validate(plugin_config) is False:
+            if plugin.validate(plugin_data['components']) is False:
                 overall_status = False
             self.log.info('===== END {} ====='.format(plugin_name.upper()))
 
@@ -57,6 +66,7 @@ class SysAssert(object):
         for plugin_name in sorted(set(plugins)):
             self.log.debug('generating with plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
-            results[plugin_name] = plugin.generate()
+            results[plugin_name] = {'components': plugin.generate()}
 
-        return results
+        # output must validate input schema
+        return self.schema(results)
