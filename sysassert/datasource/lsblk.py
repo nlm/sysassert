@@ -9,7 +9,7 @@ class LSBLKDataSource(DataSource):
 
     def __init__(self, blkdata=None):
         if blkdata is not None:
-            self.blkdata = dmidata
+            self.blkdata = blkdata
         else:
             blkdata = rawcmd(['cat', 'lsblk.txt'])
         self.data = self._parse_blk(blkdata)
