@@ -1,17 +1,18 @@
-from setuptools import setup,find_packages
+from setuptools import setup, find_packages
 
 setup(
     name = "sysassert",
     version = "0.1",
-    packages = ['sysassert'],
+    packages = find_packages(),
     author = "Nicolas Limage",
     author_email = 'nlimage@online.net',
     description = "system hardware validation tool",
     license = "GPL",
     keywords = "system validation",
     install_requires = [
-        'toml',
-        'six',
+        'pyyaml',
+        'colorlog',
+        'voluptuous',
     ],
     entry_points = {
         'console_scripts': [
@@ -22,9 +23,11 @@ setup(
             'memory = sysassert.plugin.memory:MemoryPlugin',
             'processor = sysassert.plugin.processor:ProcessorPlugin',
             'bios = sysassert.plugin.bios:BIOSPlugin',
+            'disk = sysassert.plugin.disk:DiskPlugin',
         ],
         'sysassert_datasource_v1': [
             'dmi = sysassert.datasource.dmi:DMIDataSource',
+            'lsblk = sysassert.datasource.lsblk:LSBLKDataSource',
         ],
     }
 )
