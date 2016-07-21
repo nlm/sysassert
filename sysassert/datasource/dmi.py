@@ -1,6 +1,7 @@
 import re
 from sysassert.datasource import DataSource
 from sysassert.cmd import rawcmd
+from sysassert.tools import normalize
 
 class DMIDataSource(DataSource):
 
@@ -45,7 +46,7 @@ class DMIDataSource(DataSource):
                 for item in self.dmi_types.items()
                 if item[1] == dmi_type][0]
 
-    def dmi_items(self, dmi_type=None):
+    def get_items(self, dmi_type=None):
         """
         Returns dmi items matching an optional dmi id
         """
@@ -74,11 +75,7 @@ class DMIDataSource(DataSource):
         return info
 
     @staticmethod
-    def _normalize(string):
-        return re.sub('\W', '_', string).lower()
-
-    @classmethod
-    def _parse_handle_section(cls, lines):
+    def _parse_handle_section(lines):
         """
         Parse a section of dmidecode output
 
@@ -97,7 +94,7 @@ class DMIDataSource(DataSource):
                 data[k].append(line.lstrip())
             elif line.startswith('\t'):
                 k, v = [i.strip() for i in line.lstrip().split(':', 1)]
-                k = cls._normalize(k)
+                k = normalize(k)
                 if v:
                     data[k] = v
                 else:

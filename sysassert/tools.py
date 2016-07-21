@@ -1,5 +1,9 @@
 import logging
+import re
 from pprint import pformat
+
+def normalize(string):
+    return re.sub('\W', '_', string).lower()
 
 def inline_dict(adict):
     return ', '.join(['{}: {}'.format(key, value)

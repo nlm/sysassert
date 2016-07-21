@@ -1,2 +1,4 @@
 class DataSource(object):
-    pass
+
+    def get_items(self):
+        raise NotImplemented

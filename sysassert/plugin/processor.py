@@ -1,9 +1,9 @@
-from sysassert.plugin.dmi import DMIPlugin
+from sysassert.plugin import AssertPlugin
 
-class ProcessorPlugin(DMIPlugin):
+class ProcessorPlugin(AssertPlugin):
 
     def validate(self, spec):
-        return self.dmi_validate('processor', spec)
+        return self.datasource_validate('dmi', 'processor', spec)
 
     def generate(self):
-        return self.dmi_generate('processor')
+        return self.datasource_generate('dmi', 'processor')

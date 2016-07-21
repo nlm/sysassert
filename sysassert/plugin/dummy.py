@@ -1,5 +1,5 @@
-import logging
 from sysassert.plugin import AssertPlugin
+import logging
 
 class DummyPlugin(AssertPlugin):
 

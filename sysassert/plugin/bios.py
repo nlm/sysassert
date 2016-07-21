@@ -1,9 +1,9 @@
-from sysassert.plugin.dmi import DMIPlugin
+from sysassert.plugin import AssertPlugin
 
-class BIOSPlugin(DMIPlugin):
+class BIOSPlugin(AssertPlugin):
 
     def validate(self, spec):
-        return self.dmi_validate('bios', spec)
+        return self.datasource_validate('dmi', 'bios', spec)
 
     def generate(self):
-        return self.dmi_generate('bios')
+        return self.datasource_generate('dmi', 'bios')
