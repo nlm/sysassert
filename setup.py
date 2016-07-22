@@ -19,7 +19,6 @@ setup(
             'sysassert = sysassert.__main__:main',
         ],
         'sysassert_plugin_v1': [
-            'dummy = sysassert.plugin.dummy:DummyPlugin',
             'memory = sysassert.plugin.memory:MemoryPlugin',
             'processor = sysassert.plugin.processor:ProcessorPlugin',
             'bios = sysassert.plugin.bios:BIOSPlugin',
