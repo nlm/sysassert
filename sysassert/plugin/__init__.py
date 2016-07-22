@@ -7,7 +7,7 @@ class AssertPlugin(object):
     def __init__(self):
         self.log = logging.getLogger()
 
-    def validate(self, spec):
+    def validate(self, spec, strict=True):
         raise NotImplemented
 
     def generate(self):
@@ -31,9 +31,10 @@ class AssertPlugin(object):
         for item in dlc.missing:
             self.log.error('missing {} ({})'.format(elttype, inline_dict(item)))
 
-        for item in dlc.unwanted:
-            self.log.error('unwanted {} ({})'.format(elttype,
-                                                     inline_dict(item)))
+        if strict:
+            for item in dlc.unwanted:
+                self.log.error('unwanted {} ({})'.format(elttype,
+                                                         inline_dict(item)))
 
         if strict:
             return len(dlc.missing) == 0 and len(dlc.unwanted) == 0

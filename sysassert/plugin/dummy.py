@@ -6,7 +6,7 @@ class DummyPlugin(AssertPlugin):
     def __init__(self):
         self.log = logging.getLogger(__name__)
 
-    def validate(self, spec):
+    def validate(self, spec, strict=None):
         self.log.info('everything is ok')
         return True
 
