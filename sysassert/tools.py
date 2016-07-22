@@ -7,7 +7,7 @@ def normalize(string):
 
 def inline_dict(adict):
     return ', '.join(['{}: {}'.format(key, value)
-                      for key, value in adict.items()])
+                      for key, value in sorted(adict.items())])
 
 class DictListComparator(object):
 
