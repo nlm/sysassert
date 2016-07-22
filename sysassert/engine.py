@@ -7,7 +7,7 @@ class SysAssert(object):
 
     schema = Schema({
         str: {
-            Optional('params'): dict,
+            Optional('params'): { 'strict': bool },
             Required('components'): [ dict ],
         }
     })
@@ -48,7 +48,7 @@ class SysAssert(object):
             self.log.debug('configuring plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
             self.log.info('===== BEGIN {} ====='.format(plugin_name.upper()))
-            if plugin.validate(plugin_data['components']) is False:
+            if plugin.validate(plugin_data['components'], **plugin_data.get('params', {})) is False:
                 overall_status = False
             self.log.info('===== END {} ====='.format(plugin_name.upper()))
 
