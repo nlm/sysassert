@@ -1,4 +1,3 @@
-import re
 from sysassert.datasource import DataSource
 from sysassert.cmd import rawcmd
 from sysassert.tools import normalize
@@ -32,8 +31,8 @@ class LSPCIDataSource(DataSource):
                 if device:
                     results.append(device)
                 device = {}
-            else:
-                key, value = line.split('\t')
+            elif ':\t' in line:
+                (key, value) = line.split('\t')
                 device[normalize(key.rstrip(':'))] = value
 
         return results
