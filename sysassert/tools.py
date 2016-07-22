@@ -28,10 +28,11 @@ class DictListComparator(object):
                 matching = True
 
                 for attr, value in wanted_element.items():
-                    if str(available_element[attr]) != str(value):
+                    if (attr not in available_element
+                        or str(available_element[attr]) != str(value)):
                         self.log.debug('attr mismatch: {} ({} <=> {})'
                                        .format(attr, value,
-                                               available_element[attr]))
+                                               available_element.get(attr)))
                         matching = False
                         break
 
