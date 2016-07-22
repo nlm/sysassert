@@ -25,15 +25,16 @@ class AssertPlugin(object):
         dlc = DictListComparator(spec, items)
 
         for item in dlc.found:
-            self.log.info('found matching {} ({})'.format(elttype,
+            self.log.info('found matching {} ({})'.format(elttype or 'device',
                                                           inline_dict(item)))
 
         for item in dlc.missing:
-            self.log.error('missing {} ({})'.format(elttype, inline_dict(item)))
+            self.log.error('missing {} ({})'.format(elttype or 'device',
+                                                    inline_dict(item)))
 
         if strict:
             for item in dlc.unwanted:
-                self.log.error('unwanted {} ({})'.format(elttype,
+                self.log.error('unwanted {} ({})'.format(elttype or 'device',
                                                          inline_dict(item)))
 
         if strict:
