@@ -83,7 +83,12 @@ def main(arguments=None):
         else:
             logger.error('overall result: failure')
     elif args.command in ('generate', 'gen'):
-        print(yaml.dump(sas.generate(args.plugin), default_flow_style=False))
+        try:
+            print(yaml.dump(sas.generate(args.plugin),
+                            default_flow_style=False))
+        except Exception as exc:
+            logger.error(exc)
+            sys.exit(1)
     elif args.command in ('plugins', 'plu'):
         logger.info('available plugins: {}'.format(', '.join(sas.plugins)))
     else:

@@ -65,6 +65,8 @@ class SysAssert(object):
 
         for plugin_name in sorted(set(plugins)):
             self.log.debug('generating with plugin: {}'.format(plugin_name))
+            if plugin_name not in self.plugins:
+                raise KeyError('unknown plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
             results[plugin_name] = {'components': plugin.generate()}
 
