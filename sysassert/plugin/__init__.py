@@ -20,7 +20,7 @@ class AssertPlugin(object):
                 return entrypoint.load()
         return None
 
-    def datasource_validate(self, datasource, elttype, spec, strict=True):
+    def datasource_validate(self, spec, datasource, elttype=None, strict=True):
         items = self.get_datasource(datasource)().get_items(elttype)
         dlc = DictListComparator(spec, items)
 
@@ -41,7 +41,7 @@ class AssertPlugin(object):
         else:
             return len(dlc.missing) == 0
 
-    def datasource_generate(self, datasource, elttype):
+    def datasource_generate(self, datasource, elttype=None):
         """
         generate a plugin from a datasource
         """
