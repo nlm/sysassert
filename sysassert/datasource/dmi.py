@@ -28,11 +28,13 @@ class DMIDataSource(DataSource):
         41: 'onboard device',
     }
 
+    command = ['dmidecode']
+
     def __init__(self, dmidata=None):
         if dmidata is not None:
             self.dmidata = dmidata
         else:
-            dmidata = rawcmd(['cat', 'dmidecode.txt'])
+            dmidata = rawcmd(self.command)
         self.data = self._parse_dmi(dmidata)
 
     def dmi_id(self, dmi_type):

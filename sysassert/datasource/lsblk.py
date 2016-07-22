@@ -11,7 +11,7 @@ class LSBLKDataSource(DataSource):
         if blkdata is not None:
             self.blkdata = blkdata
         else:
-            blkdata = rawcmd(['cat', 'lsblk.txt'])
+            blkdata = rawcmd(self.command)
         self.data = self._parse_blk(blkdata)
 
     def get_items(self, blk_type=None):

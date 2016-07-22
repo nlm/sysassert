@@ -4,8 +4,7 @@ from sysassert.tools import normalize
 
 class LSPCIDataSource(DataSource):
 
-    #command = ['lspci', '-mm', '-v']
-    command = ['cat', 'lspci.txt']
+    command = ['lspci', '-mm', '-v']
 
     def __init__(self, data=None):
         if data is not None:
