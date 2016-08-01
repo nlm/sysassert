@@ -24,11 +24,13 @@ setup(
             'bios = sysassert.plugin.bios:BIOSPlugin',
             'disk = sysassert.plugin.disk:DiskPlugin',
             'pci = sysassert.plugin.pci:PCIPlugin',
+            'usb = sysassert.plugin.usb:USBPlugin',
         ],
         'sysassert_datasource_v1': [
             'dmi = sysassert.datasource.dmi:DMIDataSource',
             'lsblk = sysassert.datasource.lsblk:LSBLKDataSource',
             'lspci = sysassert.datasource.lspci:LSPCIDataSource',
+            'lsusb = sysassert.datasource.lsusb:LSUSBDataSource',
         ],
     }
 )
