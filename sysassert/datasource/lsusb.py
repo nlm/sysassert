@@ -27,8 +27,11 @@ class LSUSBDataSource(DataSource):
         results = []
         device = {}
         for line in content.split('\n'):
-            # example: Bus 002 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
-            res = re.match('^Bus (?P<bus>\d+) Device (?P<device>\d+): ID (?P<id>\d+:\d+) (?P<desc>.*)$', line)
+            # example: Bus 002 Device 002: ID 8087:0024 Intel Corp. Hub
+            res = re.match('^Bus\s+(?P<bus>\d+)\s+Device\s+(?P<device>\d+):'
+                           '\s+ID\s+(?P<id>[\dabcdef]+:[\dabcdef]+)\s+'
+                           '(?P<desc>.*)$', line)
             if res:
-                results.append({key: res.group(key) for key in ['bus', 'device', 'id', 'desc']})
+                results.append({key: res.group(key) for key in ['bus', 'device',
+                                                                'id', 'desc']})
         return results
