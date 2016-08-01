@@ -84,8 +84,9 @@ def main(arguments=None):
             logger.error('overall result: failure')
     elif args.command in ('generate', 'gen'):
         try:
-            print(yaml.dump(sas.generate(args.plugin),
-                            default_flow_style=False))
+            print(yaml.safe_dump(sas.generate(args.plugin),
+                                 default_flow_style=False,
+                                 default_style=False))
         except Exception as exc:
             logger.error(exc)
             sys.exit(1)
