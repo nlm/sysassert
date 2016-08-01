@@ -68,7 +68,12 @@ class SysAssert(object):
             if plugin_name not in self.plugins:
                 raise KeyError('unknown plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
-            results[plugin_name] = {'components': plugin.generate()}
+            #results[plugin_name] = {'components': plugin.generate()}
+            # filter on string type value because we don't accurately compare subtables for now
+            results[plugin_name] = {'components': [{key: value
+                                                    for key, value in entry.items()
+                                                    if type(value) == str}
+                                                   for entry in plugin.generate()]}
 
         # output must validate input schema
         return self.schema(results)
