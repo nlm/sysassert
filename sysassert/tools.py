@@ -3,7 +3,7 @@ import re
 from pprint import pformat
 
 def normalize(string):
-    return re.sub('\W', '_', string).lower()
+    return re.sub(r'\W', '_', string).lower()
 
 def inline_dict(adict):
     return ', '.join(['{}: {}'.format(key, value)
@@ -28,8 +28,8 @@ class DictListComparator(object):
                 matching = True
 
                 for attr, value in wanted_element.items():
-                    if (attr not in available_element
-                        or str(available_element[attr]) != str(value)):
+                    if (attr not in available_element or
+                            str(available_element[attr]) != str(value)):
                         self.log.debug('attr mismatch: {} ({} <=> {})'
                                        .format(attr, value,
                                                available_element.get(attr)))

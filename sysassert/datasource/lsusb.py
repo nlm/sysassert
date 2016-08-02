@@ -25,13 +25,12 @@ class LSUSBDataSource(DataSource):
         Returns a list of dicts
         """
         results = []
-        device = {}
         for line in content.split('\n'):
             # example: Bus 002 Device 002: ID 8087:0024 Intel Corp. Hub
-            res = re.match('^Bus\s+(?P<bus>\d+)\s+Device\s+(?P<device>\d+):'
-                           '\s+ID\s+(?P<id>[\dabcdef]+:[\dabcdef]+)\s+'
-                           '(?P<desc>.*)$', line)
+            res = re.match(r'^Bus\s+(?P<bus>\d+)\s+Device\s+(?P<device>\d+):'
+                           r'\s+ID\s+(?P<id>[\dabcdef]+:[\dabcdef]+)\s+'
+                           r'(?P<desc>.*)$', line)
             if res:
-                results.append({key: res.group(key) for key in ['bus', 'device',
-                                                                'id', 'desc']})
+                results.append({normalize(key): res.group(key)
+                                for key in ['bus', 'device', 'id', 'desc']})
         return results

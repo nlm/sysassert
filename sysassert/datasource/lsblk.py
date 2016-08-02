@@ -5,7 +5,8 @@ from sysassert.tools import normalize
 
 class LSBLKDataSource(DataSource):
 
-    command = ['lsblk', '-Pnbo', 'KNAME,TYPE,SIZE,ALIGNMENT,MIN-IO,OPT-IO,PHY-SEC,LOG-SEC,ROTA,RQ-SIZE,MODEL']
+    command = ['lsblk', '-Pnbo', 'KNAME,TYPE,SIZE,ALIGNMENT,MIN-IO,OPT-IO,'
+                                 'PHY-SEC,LOG-SEC,ROTA,RQ-SIZE,MODEL']
 
     def __init__(self, blkdata=None):
         if blkdata is not None:

@@ -8,10 +8,10 @@ class AssertPlugin(object):
         self.log = logging.getLogger(__name__)
 
     def validate(self, spec, strict=True):
-        raise NotImplemented
+        raise NotImplementedError
 
     def generate(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @staticmethod
     def get_datasource(name):

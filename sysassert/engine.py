@@ -7,8 +7,8 @@ class SysAssert(object):
 
     schema = Schema({
         str: {
-            Optional('params'): { 'strict': bool },
-            Required('components'): [ dict ],
+            Optional('params'): {'strict': bool},
+            Required('components'): [dict],
         }
     })
 
@@ -34,7 +34,6 @@ class SysAssert(object):
         do the actual job of validating the system
         """
         overall_status = True
-        results = []
         try:
             profile = self.schema(profile)
         except MultipleInvalid as exc:
@@ -48,7 +47,8 @@ class SysAssert(object):
             self.log.debug('configuring plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
             self.log.info('===== BEGIN {} ====='.format(plugin_name.upper()))
-            if plugin.validate(plugin_data['components'], **plugin_data.get('params', {})) is False:
+            if plugin.validate(plugin_data['components'],
+                               **plugin_data.get('params', {})) is False:
                 overall_status = False
             self.log.info('===== END {} ====='.format(plugin_name.upper()))
 
@@ -69,11 +69,13 @@ class SysAssert(object):
                 raise KeyError('unknown plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
             #results[plugin_name] = {'components': plugin.generate()}
-            # filter on string type value because we don't accurately compare subtables for now
-            results[plugin_name] = {'components': [{key: value
-                                                    for key, value in entry.items()
-                                                    if type(value) == str}
-                                                   for entry in plugin.generate()]}
+            # filter on string type value because we don't accurately
+            # compare subtables for now
+            components = [{key: value
+                           for key, value in entry.items()
+                           if type(value) == str}
+                          for entry in plugin.generate()]
+            results[plugin_name] = {'components': components}
 
         # output must validate input schema
         return self.schema(results)

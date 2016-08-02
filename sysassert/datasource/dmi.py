@@ -1,4 +1,3 @@
-import re
 from sysassert.datasource import DataSource
 from sysassert.cmd import rawcmd
 from sysassert.tools import normalize
@@ -86,21 +85,21 @@ class DMIDataSource(DataSource):
         * line started with one tab is one option and its value
         * line started with two tabs is a member of list
         """
-        #data = { '_title': next(lines).rstrip() }
         data = {}
+        key = ''
         next(lines)
 
         for line in lines:
             line = line.rstrip()
             if line.startswith('\t\t'):
-                data[k].append(line.lstrip())
+                data[key].append(line.lstrip())
             elif line.startswith('\t'):
-                k, v = [i.strip() for i in line.lstrip().split(':', 1)]
-                k = normalize(k)
-                if v:
-                    data[k] = v
+                key, value = [i.strip() for i in line.lstrip().split(':', 1)]
+                key = normalize(key)
+                if value:
+                    data[key] = value
                 else:
-                    data[k] = []
+                    data[key] = []
             else:
                 break
 

@@ -3,10 +3,8 @@ import logging
 import argparse
 import yaml
 from colorlog import ColoredFormatter
+from logging import Formatter
 from .engine import SysAssert
-from .cmd import cmd, rawcmd
-
-from pprint import pprint
 
 def config_logger(colored='auto', loglevel=None):
 
@@ -19,7 +17,7 @@ def config_logger(colored='auto', loglevel=None):
 
     stream = logging.StreamHandler()
     if ((colored == 'auto' and sys.stderr.isatty()) or
-        colored == 'always'):
+            colored == 'always'):
         log_format = ('%(log_color)s%(levelname)-5s%(reset)s |'
                       ' %(log_color)s%(message)s%(reset)s')
         stream.setFormatter(ColoredFormatter(log_format))
@@ -53,13 +51,14 @@ def parse_args(arguments=None):
 
     # Generation Command
     cmd_generate = subparsers.add_parser('generate', aliases=['gen'],
-                                         help='generate configuration from current hardware')
+                                         help='generate configuration '
+                                         'from current hardware')
     cmd_generate.add_argument('plugin', nargs='*',
                               help='plugins to generate config from')
 
     # List Plugins Command
-    cmd_plugins = subparsers.add_parser('plugins', aliases=['plu'],
-                                        help='list available plugins')
+    subparsers.add_parser('plugins', aliases=['plu'],
+                          help='list available plugins')
 
     return parser.parse_args(arguments)
 

@@ -1,4 +1,4 @@
 class DataSource(object):
 
-    def get_items(self):
-        raise NotImplemented
+    def get_items(self, item_class=None):
+        raise NotImplementedError

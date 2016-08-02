@@ -18,7 +18,8 @@ class LSPCIDataSource(DataSource):
             return self.data
         return [x for x in self.data if x.get('class') == item_class]
 
-    def _parse_pci(self, content):
+    @staticmethod
+    def _parse_pci(content):
         """
         Parse the whole lspci output.
         Returns a list of dicts
