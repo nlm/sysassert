@@ -47,6 +47,10 @@ class DMIDataSource(DataSource):
                 for item in self.dmi_types.items()
                 if item[1] == dmi_type][0]
 
+    @classmethod
+    def get_deps(cls):
+        return [cls.command[0]]
+
     def get_items(self, dmi_type=None):
         """
         Returns dmi items matching an optional dmi id

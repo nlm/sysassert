@@ -15,6 +15,10 @@ class LSBLKDataSource(DataSource):
             blkdata = rawcmd(self.command)
         self.data = self._parse_blk(blkdata)
 
+    @classmethod
+    def get_deps(cls):
+        return [cls.command[0]]
+
     def get_items(self, blk_type=None):
         if blk_type is None:
             return self.data

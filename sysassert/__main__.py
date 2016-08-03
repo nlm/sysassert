@@ -60,6 +60,10 @@ def parse_args(arguments=None):
     subparsers.add_parser('plugins', aliases=['plu'],
                           help='list available plugins')
 
+    # List deps
+    subparsers.add_parser('dependencies', aliases=['dep'],
+                          help='list sysassert command dependencies')
+
     return parser.parse_args(arguments)
 
 def main(arguments=None):
@@ -91,6 +95,8 @@ def main(arguments=None):
             sys.exit(1)
     elif args.command in ('plugins', 'plu'):
         logger.info('available plugins: {}'.format(', '.join(sas.plugins)))
+    elif args.command in ('dependencies', 'dep'):
+        print(' '.join(sas.dependencies()))
     else:
         raise Exception('internal error')
 

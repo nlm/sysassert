@@ -13,6 +13,10 @@ class LSPCIDataSource(DataSource):
             data = rawcmd(self.command)
         self.data = self._parse_pci(data)
 
+    @classmethod
+    def get_deps(cls):
+        return [cls.command[0]]
+
     def get_items(self, item_class=None):
         if item_class is None:
             return self.data

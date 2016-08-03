@@ -2,6 +2,7 @@ import logging
 import pkg_resources as pkr
 from voluptuous import Schema, Required, Optional, MultipleInvalid
 from .plugin import AssertPlugin
+from .datasource import DataSource
 
 class SysAssert(object):
 
@@ -28,6 +29,15 @@ class SysAssert(object):
             assert issubclass(plugin_class, AssertPlugin)
             plugins[entry.name] = entry.load()
         return plugins
+
+    def dependencies(self):
+        """
+        get the list of shell command dependencies
+        """
+        for entry in pkr.iter_entry_points(group='sysassert_datasource_v1'):
+            ds_class = entry.load()
+            assert issubclass(ds_class, DataSource)
+            yield from ds_class.get_deps()
 
     def validate(self, profile):
         """
