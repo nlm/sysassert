@@ -56,11 +56,11 @@ class SysAssert(object):
                 return False
             self.log.debug('configuring plugin: {}'.format(plugin_name))
             plugin = self.plugins[plugin_name]()
-            self.log.info('===== BEGIN {} ====='.format(plugin_name.upper()))
+            self.log.info('----- BEGIN {} -----'.format(plugin_name.upper()))
             if plugin.validate(plugin_data['components'],
                                **plugin_data.get('params', {})) is False:
                 overall_status = False
-            self.log.info('===== END {} ====='.format(plugin_name.upper()))
+            self.log.info('----- END {} -----'.format(plugin_name.upper()))
 
         return overall_status
 

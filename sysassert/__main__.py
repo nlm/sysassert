@@ -46,7 +46,7 @@ def parse_args(arguments=None):
     # Validation Command
     cmd_validate = subparsers.add_parser('validate', aliases=['val'],
                                          help='validate a machine profile')
-    cmd_validate.add_argument('profile', type=argparse.FileType('r'),
+    cmd_validate.add_argument('profile', nargs='+', type=argparse.FileType('r'),
                               help='machine profile to check')
 
     # Generation Command
@@ -62,7 +62,7 @@ def parse_args(arguments=None):
 
     # List deps
     subparsers.add_parser('dependencies', aliases=['dep'],
-                          help='list sysassert command dependencies')
+                          help='list system tools dependencies')
 
     return parser.parse_args(arguments)
 
@@ -74,15 +74,26 @@ def main(arguments=None):
     args = parse_args(arguments)
     config_logger(colored=args.color, loglevel=args.loglevel)
     logger = logging.getLogger(__name__)
+    logger.info('starting sysassert')
 
     sas = SysAssert()
     if args.command in ('validate', 'val'):
-        try:
-            profile_config = yaml.safe_load(args.profile)
-        except Exception as exc:
-            raise Exception('error loading configuration')
-        if sas.validate(profile_config) is True:
-            logger.info('overall result: success')
+        passed_profiles = []
+        failed_profiles = []
+        for profile in args.profile:
+            logger.info('')
+            logger.info('=========== BEGIN PROFILE {} =========='.format(profile.name))
+            try:
+                profile_config = yaml.safe_load(profile)
+            except Exception as exc:
+                raise Exception('error loading configuration')
+            if sas.validate(profile_config):
+                passed_profiles.append(profile.name)
+            else:
+                failed_profiles.append(profile.name)
+        logger.info('')
+        if len(passed_profiles) > 0:
+            logger.info('overall result: success ({})'.format(', '.join(passed_profiles)))
         else:
             logger.error('overall result: failure')
     elif args.command in ('generate', 'gen'):
