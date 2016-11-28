@@ -96,7 +96,8 @@ class DMIDataSource(DataSource):
         for line in lines:
             line = line.rstrip()
             if line.startswith('\t\t'):
-                data[key].append(line.lstrip())
+                if isinstance(data[key], list):
+                    data[key].append(line.lstrip())
             elif line.startswith('\t'):
                 key, value = [i.strip() for i in line.lstrip().split(':', 1)]
                 key = normalize(key)
