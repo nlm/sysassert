@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+from sysassert.__main__ import main
+
+def sysassert_main():
+    main()
+
+if __name__ == '__main__':
+    sysassert_main()
