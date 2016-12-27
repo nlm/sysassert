@@ -1,0 +1,4 @@
+install:
+  - pip install .
+build:
+  - pyinstaller --onefile ./sysassert.spec
