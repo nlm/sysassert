@@ -5,26 +5,48 @@ from sysassert.tools import normalize
 class DMIDataSource(DataSource):
 
     dmi_types = {
-        0:  'bios',
-        1:  'system',
-        2:  'base board',
-        3:  'chassis',
-        4:  'processor',
-        7:  'cache',
-        8:  'port connector',
-        9:  'system slot',
-        10: 'on board device',
+        0: 'bios',
+        1: 'system',
+        2: 'base board',
+        3: 'chassis',
+        4: 'processor',
+        5: 'memory controller',
+        6: 'memory module',
+        7: 'cache',
+        8: 'port connector',
+        9: 'system slots',
+        10: 'on board devices',
         11: 'oem strings',
-        #13: 'bios language',
+        12: 'system configuration options',
+        13: 'bios language',
+        14: 'group associations',
         15: 'system event log',
         16: 'physical memory array',
         17: 'memory device',
+        18: '32-bit memory error',
         19: 'memory array mapped address',
+        20: 'memory device mapped address',
+        21: 'built-in pointing device',
+        22: 'portable battery',
+        23: 'system reset',
         24: 'hardware security',
         25: 'system power controls',
+        26: 'voltage probe',
         27: 'cooling device',
+        28: 'temperature probe',
+        29: 'electrical current probe',
+        30: 'out-of-band remote access',
+        31: 'boot integrity services',
         32: 'system boot',
-        41: 'onboard device',
+        33: '64-bit memory error',
+        34: 'management device',
+        35: 'management device component',
+        36: 'management device threshold data',
+        37: 'memory channel',
+        38: 'ipmi device',
+        39: 'power supply',
+        40: 'additional information',
+        41: 'onboard device'
     }
 
     command = ['dmidecode']
@@ -42,7 +64,7 @@ class DMIDataSource(DataSource):
         Returns a dmi id or raises KeyError
         """
         if dmi_type not in self.dmi_types.values():
-            raise KeyError
+            raise KeyError('unknown dmi type')
         return [item[0]
                 for item in self.dmi_types.items()
                 if item[1] == dmi_type][0]
