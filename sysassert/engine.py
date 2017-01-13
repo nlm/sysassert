@@ -39,6 +39,13 @@ class SysAssert(object):
             assert issubclass(ds_class, DataSource)
             yield from ds_class.get_deps()
 
+    def lint(self, profile):
+        try:
+            self.schema(profile)
+        except MultipleInvalid as err:
+            raise Exception(err)
+        return True
+
     def validate(self, profile):
         """
         do the actual job of validating the system

@@ -56,6 +56,13 @@ def parse_args(arguments=None):
     cmd_generate.add_argument('plugin', nargs='*',
                               help='plugins to generate config from')
 
+    # Config Lint
+
+    cmd_lint = subparsers.add_parser('lint',
+                                    help='check profile file validity')
+    cmd_lint.add_argument('profile', nargs='+', type=argparse.FileType('r'),
+                          help='machine profile to check')
+
     # List Plugins Command
     subparsers.add_parser('plugins', aliases=['plu'],
                           help='list available plugins')
@@ -108,6 +115,15 @@ def main(arguments=None):
         logger.info('available plugins: {}'.format(', '.join(sas.plugins)))
     elif args.command in ('dependencies', 'dep'):
         print(' '.join(sas.dependencies()))
+    elif args.command in ('lint'):
+        for profile in args.profile:
+            logger.info('checking {0}'.format(profile.name))
+            try:
+                profile_config = yaml.safe_load(profile)
+                if sas.lint(profile_config):
+                    logger.info('file format is valid')
+            except (yaml.parser.ParseError, Exception) as err:
+                logger.error('error loading configuration: {0}'.format(err))
     else:
         raise Exception('internal error')
 
