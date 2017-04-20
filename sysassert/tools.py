@@ -20,7 +20,7 @@ class DictListComparator(object):
 
         for wanted_element in wanted_elements:
 
-            self.log.debug('wanted: {}'.format(pformat(wanted_element)))
+            self.log.debug(_('wanted: {}').format(pformat(wanted_element)))
             matching = False
 
             for available_element in available_elements:
@@ -30,14 +30,14 @@ class DictListComparator(object):
                 for attr, value in wanted_element.items():
                     if (attr not in available_element or
                             str(available_element[attr]) != str(value)):
-                        self.log.debug('attr mismatch: {} ({} <=> {})'
+                        self.log.debug(_('attr mismatch: {0} ({1} <=> {2})')
                                        .format(attr, value,
                                                available_element.get(attr)))
                         matching = False
                         break
 
                 if matching:
-                    self.log.debug('found match: {}'
+                    self.log.debug(_('found match: {0}')
                                    .format(pformat(available_element)))
                     self._found.append(wanted_element)
                     available_elements.remove(available_element)

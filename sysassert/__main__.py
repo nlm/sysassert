@@ -2,9 +2,12 @@ import sys
 import logging
 import argparse
 import yaml
+import gettext
 from colorlog import ColoredFormatter
 from logging import Formatter
 from .engine import SysAssert
+
+gettext.install('sysassert')
 
 def config_logger(colored='auto', loglevel=None):
 
@@ -35,41 +38,41 @@ def parse_args(arguments=None):
     log_group.add_argument('-l', '--loglevel', default='info',
                            choices=('debug', 'info', 'warning',
                                     'error', 'critical'),
-                           help='set the logging level')
+                           help=_('set the logging level'))
     log_group.add_argument('-c', '--color', default='auto',
                            choices=('auto', 'always', 'never'),
-                           help='colored output')
+                           help=_('colored output'))
 
     subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True
 
     # Validation Command
     cmd_validate = subparsers.add_parser('validate', aliases=['val'],
-                                         help='validate a machine profile')
+                                         help=_('validate a machine profile'))
     cmd_validate.add_argument('profile', nargs='+', type=argparse.FileType('r'),
-                              help='machine profile to check')
+                              help=_('machine profile to check'))
 
     # Generation Command
     cmd_generate = subparsers.add_parser('generate', aliases=['gen'],
-                                         help='generate configuration '
-                                         'from current hardware')
+                                         help=_('generate configuration '
+                                         'from current hardware'))
     cmd_generate.add_argument('plugin', nargs='*',
-                              help='plugins to generate config from')
+                              help=_('plugins to generate config from'))
 
     # Config Lint
 
     cmd_lint = subparsers.add_parser('lint',
-                                    help='check profile file validity')
+                                    help=_('check profile file validity'))
     cmd_lint.add_argument('profile', nargs='+', type=argparse.FileType('r'),
-                          help='machine profile to check')
+                          help=_('machine profile to check'))
 
     # List Plugins Command
     subparsers.add_parser('plugins', aliases=['plu'],
-                          help='list available plugins')
+                          help=_('list available plugins'))
 
     # List deps
     subparsers.add_parser('dependencies', aliases=['dep'],
-                          help='list system tools dependencies')
+                          help=_('list system tools dependencies'))
 
     return parser.parse_args(arguments)
 
@@ -81,7 +84,7 @@ def main(arguments=None):
     args = parse_args(arguments)
     config_logger(colored=args.color, loglevel=args.loglevel)
     logger = logging.getLogger(__name__)
-    logger.info('starting sysassert')
+    logger.info(_('starting sysassert'))
 
     sas = SysAssert()
     if args.command in ('validate', 'val'):
@@ -89,20 +92,20 @@ def main(arguments=None):
         failed_profiles = []
         for profile in args.profile:
             logger.info('')
-            logger.info('=========== BEGIN PROFILE {} =========='.format(profile.name))
+            logger.info(_('=========== BEGIN PROFILE {0} ==========').format(profile.name))
             try:
                 profile_config = yaml.safe_load(profile)
             except Exception as exc:
-                raise Exception('error loading configuration')
+                raise Exception(_('error loading configuration'))
             if sas.validate(profile_config):
                 passed_profiles.append(profile.name)
             else:
                 failed_profiles.append(profile.name)
         logger.info('')
         if len(passed_profiles) > 0:
-            logger.info('overall result: success ({})'.format(', '.join(passed_profiles)))
+            logger.info(_('overall result: success ({0}))'.format(', '.join(passed_profiles)))
         else:
-            logger.error('overall result: failure')
+            logger.error(_('overall result: failure'))
     elif args.command in ('generate', 'gen'):
         try:
             print(yaml.safe_dump(sas.generate(args.plugin),
@@ -112,20 +115,20 @@ def main(arguments=None):
             logger.error(exc)
             sys.exit(1)
     elif args.command in ('plugins', 'plu'):
-        logger.info('available plugins: {}'.format(', '.join(sas.plugins)))
+        logger.info(_('available plugins: {0}').format(', '.join(sas.plugins)))
     elif args.command in ('dependencies', 'dep'):
         print(' '.join(sas.dependencies()))
     elif args.command in ('lint'):
         for profile in args.profile:
-            logger.info('checking {0}'.format(profile.name))
+            logger.info(_('checking {0}').format(profile.name))
             try:
                 profile_config = yaml.safe_load(profile)
                 if sas.lint(profile_config):
-                    logger.info('file format is valid')
+                    logger.info(_('file format is valid'))
             except (yaml.parser.ParseError, Exception) as err:
-                logger.error('error loading configuration: {0}'.format(err))
+                logger.error(_('error loading configuration: {0}').format(err))
     else:
-        raise Exception('internal error')
+        raise Exception(_('internal error'))
 
 if __name__ == '__main__':
     main()

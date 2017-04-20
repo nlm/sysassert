@@ -64,7 +64,7 @@ class DMIDataSource(DataSource):
         Returns a dmi id or raises KeyError
         """
         if dmi_type not in self.dmi_types.values():
-            raise KeyError('unknown dmi type')
+            raise KeyError(_('unknown dmi type'))
         return [item[0]
                 for item in self.dmi_types.items()
                 if item[1] == dmi_type][0]

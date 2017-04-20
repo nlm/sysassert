@@ -54,20 +54,20 @@ class SysAssert(object):
         try:
             profile = self.schema(profile)
         except MultipleInvalid as exc:
-            self.log.error('error in configuration: {}'.format(exc))
+            self.log.error(_('error in configuration: {0}').format(exc))
 
         for plugin_name, plugin_data in sorted(profile.items()):
-            self.log.debug('config section: {}'.format(plugin_name))
+            self.log.debug(_('config section: {0}').format(plugin_name))
             if plugin_name not in self.plugins:
-                self.log.error('plugin not found: {}'.format(plugin_name))
+                self.log.error(_('plugin not found: {0}').format(plugin_name))
                 return False
-            self.log.debug('configuring plugin: {}'.format(plugin_name))
+            self.log.debug(_('configuring plugin: {}').format(plugin_name))
             plugin = self.plugins[plugin_name]()
-            self.log.info('----- BEGIN {} -----'.format(plugin_name.upper()))
+            self.log.info(_('----- BEGIN {0} -----').format(plugin_name.upper()))
             if plugin.validate(plugin_data['components'],
                                **plugin_data.get('params', {})) is False:
                 overall_status = False
-            self.log.info('----- END {} -----'.format(plugin_name.upper()))
+            self.log.info(_('----- END {0} -----').format(plugin_name.upper()))
 
         return overall_status
 
@@ -81,9 +81,9 @@ class SysAssert(object):
             plugins = self.plugins
 
         for plugin_name in sorted(set(plugins)):
-            self.log.debug('generating with plugin: {}'.format(plugin_name))
+            self.log.debug(_('generating with plugin: {0}').format(plugin_name))
             if plugin_name not in self.plugins:
-                raise KeyError('unknown plugin: {}'.format(plugin_name))
+                raise KeyError(_('unknown plugin: {0}').format(plugin_name))
             plugin = self.plugins[plugin_name]()
             #results[plugin_name] = {'components': plugin.generate()}
             # filter on string type value because we don't accurately

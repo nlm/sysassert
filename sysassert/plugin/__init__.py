@@ -16,10 +16,10 @@ class AssertPlugin(object):
     @staticmethod
     def get_datasource(name):
         log = logging.getLogger(__name__)
-        log.debug('searching datasource "{}"'.format(name))
+        log.debug(_('searching datasource "{0}"').format(name))
         for entrypoint in pkr.iter_entry_points('sysassert_datasource_v1'):
             if name == entrypoint.name:
-                log.debug('found datasource "{}"'.format(name))
+                log.debug(_('found datasource "{0}"').format(name))
                 return entrypoint.load()
         log.debug('datasource "{}" not found'.format(name))
         return None
@@ -28,23 +28,23 @@ class AssertPlugin(object):
         items = self.get_datasource(datasource)().get_items(elttype)
         dlc = DictListComparator(spec, items)
 
-        self.log.debug('validating from "{}/{}" datasource (strict: {})'
+        self.log.debug(_('validating from "{0}/{1}" datasource (strict: {2})')
                        .format(datasource,
                                elttype if elttype is not None else '',
                                strict))
 
         for item in dlc.found:
-            self.log.info('found matching {} ({})'.format(elttype or 'device',
-                                                          inline_dict(item)))
+            self.log.info(_('found matching {0} ({1})').format(elttype or 'device',
+                                                               inline_dict(item)))
 
         for item in dlc.missing:
-            self.log.error('missing {} ({})'.format(elttype or 'device',
-                                                    inline_dict(item)))
+            self.log.error(_('missing {0} ({1})').format(elttype or 'device',
+                                                         inline_dict(item)))
 
         if strict:
             for item in dlc.unwanted:
-                self.log.error('unwanted {} ({})'.format(elttype or 'device',
-                                                         inline_dict(item)))
+                self.log.error(_('unwanted {0} ({1})').format(elttype or 'device',
+                                                              inline_dict(item)))
 
         if strict:
             return len(dlc.missing) == 0 and len(dlc.unwanted) == 0
