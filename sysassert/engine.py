@@ -61,7 +61,7 @@ class SysAssert(object):
             if plugin_name not in self.plugins:
                 self.log.error(_('plugin not found: {0}').format(plugin_name))
                 return False
-            self.log.debug(_('configuring plugin: {}').format(plugin_name))
+            self.log.debug(_('configuring plugin: {0}').format(plugin_name))
             plugin = self.plugins[plugin_name]()
             self.log.info(_('----- BEGIN {0} -----').format(plugin_name.upper()))
             if plugin.validate(plugin_data['components'],

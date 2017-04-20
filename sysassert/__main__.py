@@ -3,11 +3,12 @@ import logging
 import argparse
 import yaml
 import gettext
+from pkg_resources import resource_filename
 from colorlog import ColoredFormatter
 from logging import Formatter
 from .engine import SysAssert
 
-gettext.install('sysassert')
+gettext.install('sysassert', resource_filename('sysassert', 'i18n'))
 
 def config_logger(colored='auto', loglevel=None):
 
@@ -103,7 +104,7 @@ def main(arguments=None):
                 failed_profiles.append(profile.name)
         logger.info('')
         if len(passed_profiles) > 0:
-            logger.info(_('overall result: success ({0}))'.format(', '.join(passed_profiles)))
+            logger.info(_('overall result: success ({0})').format(', '.join(passed_profiles)))
         else:
             logger.error(_('overall result: failure'))
     elif args.command in ('generate', 'gen'):

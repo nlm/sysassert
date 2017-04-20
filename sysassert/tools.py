@@ -20,7 +20,7 @@ class DictListComparator(object):
 
         for wanted_element in wanted_elements:
 
-            self.log.debug(_('wanted: {}').format(pformat(wanted_element)))
+            self.log.debug(_('wanted: {0}').format(pformat(wanted_element)))
             matching = False
 
             for available_element in available_elements:

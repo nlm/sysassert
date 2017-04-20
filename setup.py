@@ -32,5 +32,9 @@ setup(
             'lspci = sysassert.datasource.lspci:LSPCIDataSource',
             'lsusb = sysassert.datasource.lsusb:LSUSBDataSource',
         ],
-    }
+    },
+    include_package_data = True,
+    package_data = {
+        'sysassert': ['i18n/*/LC_MESSAGES/*'],
+    },
 )
