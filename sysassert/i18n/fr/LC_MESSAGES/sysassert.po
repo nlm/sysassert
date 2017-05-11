@@ -184,3 +184,20 @@ msgstr "attribut ne correspondant pas : {0} ({1} <=> {2})"
 #, python-brace-format
 msgid "found match: {0}"
 msgstr "correspondance trouvée : {0}"
+
+# additional translations
+
+msgid "device"
+msgstr "périphérique"
+
+msgid "processor"
+msgstr "processeur"
+
+msgid "memory device"
+msgstr "périphérique mémoire"
+
+msgid "disk"
+msgstr "disque"
+
+msgid "bios"
+msgstr "bios"

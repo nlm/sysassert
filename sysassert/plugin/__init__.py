@@ -34,16 +34,16 @@ class AssertPlugin(object):
                                strict))
 
         for item in dlc.found:
-            self.log.info(_('found matching {0} ({1})').format(elttype or 'device',
+            self.log.info(_('found matching {0} ({1})').format(_(elttype) or _('device'),
                                                                inline_dict(item)))
 
         for item in dlc.missing:
-            self.log.error(_('missing {0} ({1})').format(elttype or 'device',
+            self.log.error(_('missing {0} ({1})').format(_(elttype) or _('device'),
                                                          inline_dict(item)))
 
         if strict:
             for item in dlc.unwanted:
-                self.log.error(_('unwanted {0} ({1})').format(elttype or 'device',
+                self.log.error(_('unwanted {0} ({1})').format(_(elttype) or _('device'),
                                                               inline_dict(item)))
 
         if strict:
