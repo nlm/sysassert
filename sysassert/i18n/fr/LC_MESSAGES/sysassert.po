@@ -196,6 +196,9 @@ msgstr "processeur"
 msgid "memory device"
 msgstr "périphérique mémoire"
 
+msgid "memory"
+msgstr "mémoire"
+
 msgid "disk"
 msgstr "disque"
 
