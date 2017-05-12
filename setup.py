@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "sysassert",
-    version = "0.1",
+    version = "0.1.1",
     packages = find_packages(),
     author = "Nicolas Limage",
     author_email = 'nlimage@online.net',
@@ -25,9 +25,13 @@ setup(
             'disk = sysassert.plugin.disk:DiskPlugin',
             'pci = sysassert.plugin.pci:PCIPlugin',
             'usb = sysassert.plugin.usb:USBPlugin',
+            'chassis = sysassert.plugin.dmistring:ChassisPlugin',
+            'baseboard = sysassert.plugin.dmistring:BaseboardPlugin',
+            'system = sysassert.plugin.dmistring:SystemPlugin',
         ],
         'sysassert_datasource_v1': [
             'dmi = sysassert.datasource.dmi:DMIDataSource',
+            'dmistring = sysassert.datasource.dmistring:DMIStringDataSource',
             'lsblk = sysassert.datasource.lsblk:LSBLKDataSource',
             'lspci = sysassert.datasource.lspci:LSPCIDataSource',
             'lsusb = sysassert.datasource.lsusb:LSUSBDataSource',
