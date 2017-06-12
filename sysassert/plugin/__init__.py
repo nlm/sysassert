@@ -15,6 +15,9 @@ class AssertPlugin(object):
 
     @staticmethod
     def get_datasource(name):
+        """
+        Retrieves a datasource from "sysassert_datasource_v1" entrypoints
+        """
         log = logging.getLogger(__name__)
         log.debug(_('searching datasource "{0}"').format(name))
         for entrypoint in pkr.iter_entry_points('sysassert_datasource_v1'):
@@ -25,7 +28,11 @@ class AssertPlugin(object):
         return None
 
     def datasource_validate(self, spec, datasource, elttype=None, strict=True):
-        items = self.get_datasource(datasource)().get_items(elttype)
+        """
+        Retrieves current hardware devices from a datasource, and compares it
+        to the provided specification extracted from the profile
+        """
+        items = self.datasource_generate(datasource, elttype)
         dlc = DictListComparator(spec, items)
 
         self.log.debug(_('validating from "{0}/{1}" datasource (strict: {2})')
@@ -34,17 +41,19 @@ class AssertPlugin(object):
                                strict))
 
         for item in dlc.found:
-            self.log.info(_('found matching {0} ({1})').format(_(elttype) or _('device'),
-                                                               inline_dict(item)))
+            self.log.info(_('found matching {0} ({1})')
+                          .format(_(elttype) or _('device'), inline_dict(item)))
 
         for item in dlc.missing:
-            self.log.error(_('missing {0} ({1})').format(_(elttype) or _('device'),
-                                                         inline_dict(item)))
+            self.log.error(_('missing {0} ({1})')
+                           .format(_(elttype) or _('device'),
+                                   inline_dict(item)))
 
         if strict:
             for item in dlc.unwanted:
-                self.log.error(_('unwanted {0} ({1})').format(_(elttype) or _('device'),
-                                                              inline_dict(item)))
+                self.log.error(_('unwanted {0} ({1})')
+                               .format(_(elttype) or _('device'),
+                                       inline_dict(item)))
 
         if strict:
             return len(dlc.missing) == 0 and len(dlc.unwanted) == 0
@@ -53,6 +62,6 @@ class AssertPlugin(object):
 
     def datasource_generate(self, datasource, elttype=None):
         """
-        generate a plugin from a datasource
+        Generates a specification from a datasource
         """
         return self.get_datasource(datasource)().get_items(elttype)
