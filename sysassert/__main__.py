@@ -34,11 +34,10 @@ def config_logger(colored='auto', loglevel=None):
         stream.setFormatter(Formatter(log_format))
     logging.basicConfig(handlers=[stream], level=level)
 
-def parse_args(arguments=None):
+def parse_args(arguments=None, available_plugins=None):
     """
     Parses the arguments from the command line
     """
-
     parser = argparse.ArgumentParser()
 
     log_group = parser.add_argument_group('logging')
@@ -64,6 +63,7 @@ def parse_args(arguments=None):
                                          help=_('generate configuration '
                                          'from current hardware'))
     cmd_generate.add_argument('plugin', nargs='*',
+                              choices=available_plugins + [[]],
                               help=_('plugins to generate config from'))
 
     # Config Lint
@@ -87,11 +87,12 @@ def main(arguments=None):
     """
     CLI for SysAssert
     """
-    args = parse_args(arguments)
+    sas = SysAssert()
+    args = parse_args(arguments,
+                      available_plugins=[plu for plu in sas.plugins.keys()])
     config_logger(colored=args.color, loglevel=args.loglevel)
     logger = logging.getLogger(__name__)
 
-    sas = SysAssert()
     if args.command in ('validate', 'val'):
         logger.info(_('starting sysassert'))
         passed_profiles = []
