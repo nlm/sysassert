@@ -59,3 +59,7 @@ class DictListComparator(object):
     @property
     def unwanted(self):
         return self._unwanted
+
+    @property
+    def diff(self):
+        pass

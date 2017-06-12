@@ -19,10 +19,17 @@ class SysAssert(object):
 
     @property
     def plugins(self):
+        """
+        returns the list of loaded plugin classes
+        """
         return self._plugins
 
     @staticmethod
     def load_plugins():
+        """
+        retrieves the available plugin classes registered with pkg_resources
+        under the "sysassert_plugin_v1" entrypoint
+        """
         plugins = {}
         for entry in pkr.iter_entry_points(group='sysassert_plugin_v1'):
             plugin_class = entry.load()
@@ -32,7 +39,7 @@ class SysAssert(object):
 
     def dependencies(self):
         """
-        get the list of shell command dependencies
+        generates the list of shell command dependencies
         """
         for entry in pkr.iter_entry_points(group='sysassert_datasource_v1'):
             ds_class = entry.load()
@@ -40,6 +47,9 @@ class SysAssert(object):
             yield from ds_class.get_deps()
 
     def lint(self, profile):
+        """
+        validates a profile data structure
+        """
         try:
             self.schema(profile)
         except MultipleInvalid as err:

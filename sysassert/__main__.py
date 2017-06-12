@@ -11,6 +11,9 @@ from .engine import SysAssert
 gettext.install('sysassert', resource_filename('sysassert', 'i18n'))
 
 def config_logger(colored='auto', loglevel=None):
+    """
+    Logger Configuration
+    """
 
     logging.SPARSE = 25
 
@@ -32,6 +35,9 @@ def config_logger(colored='auto', loglevel=None):
     logging.basicConfig(handlers=[stream], level=level)
 
 def parse_args(arguments=None):
+    """
+    Parses the arguments from the command line
+    """
 
     parser = argparse.ArgumentParser()
 
@@ -79,16 +85,15 @@ def parse_args(arguments=None):
 
 def main(arguments=None):
     """
-    main function
+    CLI for SysAssert
     """
-
     args = parse_args(arguments)
     config_logger(colored=args.color, loglevel=args.loglevel)
     logger = logging.getLogger(__name__)
-    logger.info(_('starting sysassert'))
 
     sas = SysAssert()
     if args.command in ('validate', 'val'):
+        logger.info(_('starting sysassert'))
         passed_profiles = []
         failed_profiles = []
         for profile in args.profile:
@@ -107,6 +112,7 @@ def main(arguments=None):
             logger.info(_('overall result: success ({0})').format(', '.join(passed_profiles)))
         else:
             logger.error(_('overall result: failure'))
+            return 1
     elif args.command in ('generate', 'gen'):
         try:
             print(yaml.safe_dump(sas.generate(args.plugin),
@@ -114,7 +120,7 @@ def main(arguments=None):
                                  default_style=False))
         except Exception as exc:
             logger.error(exc)
-            sys.exit(1)
+            return -1
     elif args.command in ('plugins', 'plu'):
         logger.info(_('available plugins: {0}').format(', '.join(sas.plugins)))
     elif args.command in ('dependencies', 'dep'):
@@ -128,8 +134,10 @@ def main(arguments=None):
                     logger.info(_('file format is valid'))
             except (yaml.parser.ParseError, Exception) as err:
                 logger.error(_('error loading configuration: {0}').format(err))
+                return 1
     else:
         raise Exception(_('internal error'))
+        return -1
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
