@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "sysassert",
-    version = "0.1.1",
+    version = "0.2",
     packages = find_packages(),
     author = "Nicolas Limage",
     author_email = 'nlimage@online.net',
