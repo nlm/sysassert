@@ -67,6 +67,9 @@ def parse_args(arguments=None, available_plugins=None):
     cmd_generate = subparsers.add_parser('generate', aliases=['gen'],
                                          help=_('generate configuration '
                                          'from current hardware'))
+    cmd_generate.add_argument('-f', '--filter',
+                              action='store_true', default=False,
+                              help='auto filter output')
     cmd_generate.add_argument('plugin', nargs='*',
                               choices=available_plugins + [[]],
                               help=_('plugins to generate config from'))
@@ -124,7 +127,8 @@ def main(arguments=None):
             return 1
     elif args.command in ('generate', 'gen'):
         try:
-            print(yaml.safe_dump(sas.generate(args.plugin),
+            print(yaml.safe_dump(sas.generate(args.plugin,
+                                              filtered=args.filter),
                                  default_flow_style=False,
                                  default_style=False))
         except Exception as exc:

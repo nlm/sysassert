@@ -2,6 +2,7 @@ import logging
 import pkg_resources as pkr
 from voluptuous import Schema, Required, Optional, MultipleInvalid
 from .plugin import AssertPlugin
+from .filter import FilterPlugin
 from .datasource import DataSource
 
 class SysAssert(object):
@@ -16,6 +17,7 @@ class SysAssert(object):
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self._plugins = self.load_plugins()
+        self._filters = self.load_filters()
 
     @property
     def plugins(self):
@@ -34,6 +36,26 @@ class SysAssert(object):
         for entry in pkr.iter_entry_points(group='sysassert_plugin_v1'):
             plugin_class = entry.load()
             assert issubclass(plugin_class, AssertPlugin)
+            plugins[entry.name] = entry.load()
+        return plugins
+
+    @property
+    def filters(self):
+        """
+        returns the list of loaded filter classes
+        """
+        return self._filters
+
+    @staticmethod
+    def load_filters():
+        """
+        retrieves the available filter classes registered with pkg_resources
+        under the "sysassert_filter_v1" entrypoint
+        """
+        plugins = {}
+        for entry in pkr.iter_entry_points(group='sysassert_filter_v1'):
+            plugin_class = entry.load()
+            assert issubclass(plugin_class, FilterPlugin)
             plugins[entry.name] = entry.load()
         return plugins
 
@@ -81,7 +103,7 @@ class SysAssert(object):
 
         return overall_status
 
-    def generate(self, plugins=None):
+    def generate(self, plugins=None, filtered=False):
         """
         generate configuration from what was seen by plugins
         """
@@ -102,6 +124,14 @@ class SysAssert(object):
                            for key, value in entry.items()
                            if type(value) == str}
                           for entry in plugin.generate()]
+            # filter components
+            self.log.debug(plugin_name in self.filters)
+            if filtered and plugin_name in self.filters:
+                self.log.debug(_('filtering with filter: {0}'
+                                 .format(plugin_name)))
+                cfilter = self.filters[plugin_name]()
+                components = cfilter.filtered_components(components)
+
             results[plugin_name] = {'components': components}
 
         # output must validate input schema

@@ -30,6 +30,15 @@ setup(
             'baseboard = sysassert.plugin.dmistring:BaseboardPlugin',
             'system = sysassert.plugin.dmistring:SystemPlugin',
         ],
+        'sysassert_filter_v1': [
+            'baseboard = sysassert.filter.baseboard:BaseboardFilter',
+            'bios = sysassert.filter.bios:BiosFilter',
+            'chassis = sysassert.filter.chassis:ChassisFilter',
+            'disk = sysassert.filter.disk:DiskFilter',
+            'memory = sysassert.filter.memory:MemoryFilter',
+            'processor = sysassert.filter.processor:ProcessorFilter',
+            'system = sysassert.filter.system:SystemFilter',
+        ],
         'sysassert_datasource_v1': [
             'dmi = sysassert.datasource.dmi:DMIDataSource',
             'dmistring = sysassert.datasource.dmistring:DMIStringDataSource',
