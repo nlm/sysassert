@@ -204,3 +204,6 @@ msgstr "disque"
 
 msgid "bios"
 msgstr "bios"
+
+msgid "show version"
+msgstr "afficher la version"

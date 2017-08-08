@@ -1,14 +1,15 @@
 from setuptools import setup, find_packages
+import sysassert
 
 setup(
     name = "sysassert",
-    version = "0.2",
+    version = sysassert.__version__,
     packages = find_packages(),
-    author = "Nicolas Limage",
-    author_email = 'nlimage@online.net',
+    author = sysassert.__author__,
+    author_email = sysassert.__email__,
     description = "system hardware validation tool",
-    license = "GPL",
-    keywords = "system validation",
+    license = sysassert.__license__,
+    keywords = "system hardware validation qualification",
     install_requires = [
         'pyyaml',
         'colorlog',

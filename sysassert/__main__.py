@@ -3,19 +3,21 @@ import logging
 import argparse
 import yaml
 import gettext
+import colorlog
 from pkg_resources import resource_filename
-from colorlog import ColoredFormatter
 from logging import Formatter
 from .engine import SysAssert
+from .__init__ import __version__
 
-gettext.install('sysassert', resource_filename('sysassert', 'i18n'))
+gettext.install('sysassert', resource_filename('sysassert', 'i18n'), codeset='utf-8')
 
 def config_logger(colored='auto', loglevel=None):
     """
     Logger Configuration
     """
 
-    logging.SPARSE = 25
+    logging.NOTICE = 25
+    logging.addLevelName(logging.NOTICE, 'NOTICE')
 
     if loglevel is not None:
         level = getattr(logging, loglevel.upper())
@@ -25,11 +27,14 @@ def config_logger(colored='auto', loglevel=None):
     stream = logging.StreamHandler()
     if ((colored == 'auto' and sys.stderr.isatty()) or
             colored == 'always'):
-        log_format = ('%(log_color)s%(levelname)-5s%(reset)s |'
+        log_format = ('%(log_color)s%(levelname)-6s%(reset)s |'
                       ' %(log_color)s%(message)s%(reset)s')
-        stream.setFormatter(ColoredFormatter(log_format))
+        log_colors = colorlog.default_log_colors
+        log_colors.update({'NOTICE': log_colors['INFO']})
+        stream.setFormatter(colorlog.ColoredFormatter(log_format,
+                                                      log_colors=log_colors))
     else:
-        log_format = ('%(levelname)-5s |'
+        log_format = ('%(levelname)-6s |'
                       ' %(message)s')
         stream.setFormatter(Formatter(log_format))
     logging.basicConfig(handlers=[stream], level=level)
@@ -42,8 +47,8 @@ def parse_args(arguments=None, available_plugins=None):
 
     log_group = parser.add_argument_group('logging')
     log_group.add_argument('-l', '--loglevel', default='info',
-                           choices=('debug', 'info', 'warning',
-                                    'error', 'critical'),
+                           choices=('debug', 'info', 'notice',
+                                    'warning', 'error', 'critical'),
                            help=_('set the logging level'))
     log_group.add_argument('-c', '--color', default='auto',
                            choices=('auto', 'always', 'never'),
@@ -67,11 +72,14 @@ def parse_args(arguments=None, available_plugins=None):
                               help=_('plugins to generate config from'))
 
     # Config Lint
-
     cmd_lint = subparsers.add_parser('lint',
                                     help=_('check profile file validity'))
     cmd_lint.add_argument('profile', nargs='+', type=argparse.FileType('r'),
                           help=_('machine profile to check'))
+
+    # Version Command
+    cmd_version = subparsers.add_parser('version',
+                                        help=_('show version'))
 
     # List Plugins Command
     subparsers.add_parser('plugins', aliases=['plu'],
@@ -110,7 +118,7 @@ def main(arguments=None):
                 failed_profiles.append(profile.name)
         logger.info('')
         if len(passed_profiles) > 0:
-            logger.info(_('overall result: success ({0})').format(', '.join(passed_profiles)))
+            logger.log(logging.NOTICE, _('overall result: success ({0})').format(', '.join(passed_profiles)))
         else:
             logger.error(_('overall result: failure'))
             return 1
@@ -136,6 +144,8 @@ def main(arguments=None):
             except (yaml.parser.ParseError, Exception) as err:
                 logger.error(_('error loading configuration: {0}').format(err))
                 return 1
+    elif args.command in ('version'):
+        logger.log(logging.NOTICE, 'sysassert {0}'.format(__version__))
     else:
         raise Exception(_('internal error'))
         return -1
