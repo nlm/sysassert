@@ -1,10 +1,11 @@
+import re
 from sysassert.datasource import DataSource
 from sysassert.cmd import rawcmd
 from sysassert.tools import normalize
 
 class LSPCIDataSource(DataSource):
 
-    command = ['lspci', '-mm', '-v']
+    command = ['lspci', '-mm', '-v', '-nn']
 
     def __init__(self, data=None):
         if data is not None:
@@ -37,6 +38,12 @@ class LSPCIDataSource(DataSource):
                 device = {}
             elif ':\t' in line:
                 (key, value) = line.split('\t')
+                res = re.match('(.*) \[([0-9a-f]+)\]$', value)
+                eid = None
+                if res:
+                    value = res.group(1)
+                    eid = res.group(2)
                 device[normalize(key.rstrip(':'))] = value
+                device[normalize(key.rstrip(':')) + '_id'] = eid
 
         return results
