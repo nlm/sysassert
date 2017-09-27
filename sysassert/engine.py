@@ -1,3 +1,4 @@
+from __future__ import division
 import logging
 import pkg_resources as pkr
 from voluptuous import Schema, Required, Optional, MultipleInvalid
@@ -136,3 +137,56 @@ class SysAssert(object):
 
         # output must validate input schema
         return self.schema(results)
+
+    def _adjust_unit(self, size, base=1024):
+        units = ['', 'k', 'M', 'G', 'T', 'P', 'E']
+        while size > base and len(units) > 1:
+            size /= base
+            units.pop(0)
+        return (size, units.pop(0))
+
+    def describe(self):
+        """
+        outputs a basic description of the system
+        """
+        self.log.info(_('----- BEGIN MACHINE DESCRIPTION -----'))
+
+        data = self.generate(['system', 'disk', 'memory', 'processor'])
+
+        # System
+        systems = data['system']['components']
+        self.log.info(_('{0} system(s) found:'.format(len(systems))))
+        for system in systems:
+            self.log.info(_('  - {system[manufacturer]} {system[product-name]} '
+                            '(serial: {system[serial-number]})')
+                          .format(system=system))
+
+        # Processors
+        processors = data['processor']['components']
+        self.log.info(_('{0} processor(s) found:'.format(len(processors))))
+        for processor in processors:
+            self.log.info(_('  - {processor[socket_designation]}: '
+                            '{processor[version]} '
+                            '({processor[core_count]} core(s))')
+                          .format(processor=processor))
+
+        # Memory
+        memories = data['memory']['components']
+        self.log.info(_('{0} memory device(s) found:'.format(len(memories))))
+        for memory in memories:
+            self.log.info(_('  - {memory[locator]}: {memory[size]} '
+                            '{memory[speed]} {memory[type]} '
+                            'from {memory[manufacturer]}'
+                          .format(memory=memory)))
+
+        # Disks
+        disks = data['disk']['components']
+        self.log.info(_('{0} disks(s) found:'.format(len(disks))))
+        for disk in disks:
+            disktype = 'rotational' if disk['rota'] == '1' else 'ssd'
+            size, unit = self._adjust_unit(int(disk['size']))
+            self.log.info(_('  - {disk[model]} ({disktype}, {size:.0f} {unit}B)')
+                          .format(disk=disk, disktype=disktype,
+                                  size=size, unit=unit))
+
+        self.log.info(_('----- END MACHINE DESCRIPTION -----'))

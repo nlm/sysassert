@@ -92,6 +92,10 @@ def parse_args(arguments=None, available_plugins=None):
     subparsers.add_parser('dependencies', aliases=['dep'],
                           help=_('list system tools dependencies'))
 
+    # Describe
+    subparsers.add_parser('describe',
+                          help=_('describe system basic components'))
+
     return parser.parse_args(arguments)
 
 def main(arguments=None):
@@ -150,6 +154,8 @@ def main(arguments=None):
                 return 1
     elif args.command in ('version'):
         logger.log(logging.NOTICE, 'sysassert {0}'.format(__version__))
+    elif args.command in ('describe'):
+        sas.describe()
     else:
         raise Exception(_('internal error'))
         return -1
