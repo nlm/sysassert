@@ -38,6 +38,7 @@ setup(
             'memory = sysassert.filter.memory:MemoryFilter',
             'processor = sysassert.filter.processor:ProcessorFilter',
             'system = sysassert.filter.system:SystemFilter',
+            'usb = sysassert.filter.usb:USBFilter',
         ],
         'sysassert_datasource_v1': [
             'dmi = sysassert.datasource.dmi:DMIDataSource',

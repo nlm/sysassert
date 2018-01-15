@@ -1,6 +1,6 @@
 __author__ = "Nicolas Limage"
 __license__ = "GPL"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __maintainer__ = "Nicolas Limage"
 __email__ = "github@xephon.org"
 __status__ = "Production"
