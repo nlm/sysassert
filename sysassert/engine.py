@@ -151,7 +151,7 @@ class SysAssert(object):
         """
         self.log.info(_('----- BEGIN MACHINE DESCRIPTION -----'))
 
-        data = self.generate(['system', 'disk', 'memory', 'processor'])
+        data = self.generate(['system', 'disk', 'memory', 'processor', 'pci'])
 
         # System
         systems = data['system']['components']
@@ -188,5 +188,13 @@ class SysAssert(object):
             self.log.info(_('  - {disk[model]} ({disktype}, {size:.0f} {unit}B)')
                           .format(disk=disk, disktype=disktype,
                                   size=size, unit=unit))
+
+        # Ethernet Controllers
+        eths = [elt for elt in data['pci']['components']
+                if elt.get('class') == 'Ethernet controller']
+        self.log.info(_('{0} ethernet controller(s) found:'.format(len(eths))))
+        for eth in eths:
+            self.log.info(_('  - {eth[device]} ({eth[slot]})')
+                          .format(eth=eth))
 
         self.log.info(_('----- END MACHINE DESCRIPTION -----'))
